@@ -4,10 +4,12 @@
 #
 # Licensed under GPLv2, see file LICENSE in this source tree.
 
-NEEDED-$(CONFIG_CHATTR) = y
-NEEDED-$(CONFIG_LSATTR) = y
+ifeq ($(CONFIG_OLD_E2FSPROGS),y)
+#NEEDED-$(CONFIG_CHATTR) = y
+#NEEDED-$(CONFIG_LSATTR) = y
 NEEDED-$(CONFIG_MKE2FS) = y
 NEEDED-$(CONFIG_TUNE2FS) = y
+endif
 
 lib-y:=
 

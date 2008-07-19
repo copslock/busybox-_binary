@@ -16,6 +16,11 @@
 
 INSERT
 
+#ifndef mke2fs_full_usage
+#define mke2fs_full_usage	mkfs_ext2_full_usage
+#define mke2fs_trivial_usage	mkfs_ext2_trivial_usage
+#endif// XXX:
+
 #define busybox_notes_usage \
        "Hello world!\n"
 

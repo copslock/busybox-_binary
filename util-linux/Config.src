@@ -249,6 +249,7 @@ config FSCK_MINIX
 config MKFS_EXT2
 	bool "mkfs_ext2"
 	default y
+	depends on !MKE2FS
 	select PLATFORM_LINUX
 	help
 	  Utility to create EXT2 filesystems.

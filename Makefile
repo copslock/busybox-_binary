@@ -470,6 +470,9 @@ libs-y		:= \
 		coreutils/libcoreutils/ \
 		debianutils/ \
 		e2fsprogs/ \
+		e2fsprogs/old_e2fsprogs/ \
+		$(addprefix e2fsprogs/old_e2fsprogs/, \
+			blkid/ e2p/ ext2fs/ uuid/) \
 		editors/ \
 		findutils/ \
 		init/ \

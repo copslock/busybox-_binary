@@ -6,6 +6,9 @@
 
 lib-y:=
 
+lib- += foo.o
+
+ifeq ($(CONFIG_OLD_E2FSPROGS),y)
 INSERT
 
 lib-$(CONFIG_CHATTR)     += chattr.o
@@ -15,4 +18,6 @@ lib-$(CONFIG_LSATTR)     += lsattr.o
 lib-$(CONFIG_MKE2FS)     += mke2fs.o util.o
 lib-$(CONFIG_TUNE2FS)    += tune2fs.o util.o
 
-CFLAGS += -include $(srctree)/e2fsprogs/e2fsbb.h
+CFLAGS += -include $(srctree)/e2fsprogs/old_e2fsprogs/e2fsbb.h	# mhfan
+endif
+

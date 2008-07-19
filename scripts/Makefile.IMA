@@ -97,21 +97,21 @@ lib-y:=
 include e2fsprogs/Kbuild
 lib-all-y += $(patsubst %,e2fsprogs/%,$(sort $(lib-y)))
 lib-y:=
-#include e2fsprogs/old_e2fsprogs/Kbuild
-#lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/%,$(sort $(lib-y)))
-#lib-y:=
-#include e2fsprogs/old_e2fsprogs/ext2fs/Kbuild
-#lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/ext2fs/%,$(sort $(lib-y)))
-#lib-y:=
-#include e2fsprogs/old_e2fsprogs/blkid/Kbuild
-#lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/blkid/%,$(sort $(lib-y)))
-#lib-y:=
-#include e2fsprogs/old_e2fsprogs/uuid/Kbuild
-#lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/uuid/%,$(sort $(lib-y)))
-#lib-y:=
-#include e2fsprogs/old_e2fsprogs/e2p/Kbuild
-#lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/e2p/%,$(sort $(lib-y)))
-#lib-y:=
+include e2fsprogs/old_e2fsprogs/Kbuild
+lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/%,$(sort $(lib-y)))
+lib-y:=
+include e2fsprogs/old_e2fsprogs/ext2fs/Kbuild
+lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/ext2fs/%,$(sort $(lib-y)))
+lib-y:=
+include e2fsprogs/old_e2fsprogs/blkid/Kbuild
+lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/blkid/%,$(sort $(lib-y)))
+lib-y:=
+include e2fsprogs/old_e2fsprogs/uuid/Kbuild
+lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/uuid/%,$(sort $(lib-y)))
+lib-y:=
+include e2fsprogs/old_e2fsprogs/e2p/Kbuild
+lib-all-y += $(patsubst %,e2fsprogs/old_e2fsprogs/e2p/%,$(sort $(lib-y)))
+lib-y:=
 include debianutils/Kbuild
 lib-all-y += $(patsubst %,debianutils/%,$(sort $(lib-y)))
 lib-y:=

@@ -3,7 +3,10 @@
 # see scripts/kbuild/config-language.txt.
 #
 
+source e2fsprogs/old_e2fsprogs/Config.in
+
 menu "Linux Ext2 FS Progs"
+	depends on !OLD_E2FSPROGS
 
 INSERT
 

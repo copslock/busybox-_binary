@@ -101,15 +101,16 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
 	static const int magic[] = {
 		RB_HALT_SYSTEM,
 		RB_POWER_OFF,
-		RB_AUTOBOOT
+#define RB_FASTBOOT		0x456789ab
+		RB_AUTOBOOT, RB_FASTBOOT		// XXX: mhfan
 	};
-	static const smallint signals[] = { SIGUSR1, SIGUSR2, SIGTERM };
+	static const smallint signals[] = { SIGUSR1, SIGUSR2, SIGTERM, SIGTERM };
 
 	int delay = 0;
 	int which, flags, rc;
 
 	/* Figure out which applet we're running */
-	for (which = 0; "hpr"[which] != applet_name[0]; which++)
+	for (which = 0; "hprf"[which] != applet_name[0]; which++)
 		continue;
 
 	/* Parse and handle arguments */
@@ -118,7 +119,8 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
 	 * in order to not break scripts.
 	 * -i (shut down network interfaces) is ignored.
 	 */
-	flags = getopt32(argv, "d:nfwi", &delay);
+	flags = getopt32(argv, "d:nfwiF", &delay);
+	if ((flags & 32) && *applet_name == 'r') ++which;	// XXX: mhfan
 
 	sleep(delay);
 
@@ -144,6 +146,7 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
 			if (ENABLE_FEATURE_CLEAN_UP)
 				free(pidlist);
 		}
+		if (magic[which] == RB_FASTBOOT) rc = reboot(RB_FASTBOOT); else
 		if (rc) {
 			/* talk to init */
 			if (!ENABLE_FEATURE_CALL_TELINIT) {

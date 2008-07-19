@@ -21,6 +21,18 @@ Config.in
 /busybox_old
 /busybox_unstripped*
 
+/.busybox_unstripped.cmd
+/.kernelrelease
+/libbusybox.so*
+/.tmp_versions
+/.kconfig.d
+/busybox.*
+
+/.config*
+/_install
+/cscope.*
+/*-stamp
+
 #
 # Backups / patches
 #

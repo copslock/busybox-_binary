@@ -124,6 +124,9 @@ lib-y:=
 include miscutils/Kbuild
 lib-all-y += $(patsubst %,miscutils/%,$(sort $(lib-y)))
 lib-y:=
+include miscutils/mmstcar/Kbuild
+lib-all-y += $(patsubst %,miscutils/mmstcar/%,$(sort $(lib-y)))
+lib-y:=
 include mailutils/Kbuild
 lib-all-y += $(patsubst %,mailutils/%,$(sort $(lib-y)))
 lib-y:=

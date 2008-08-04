@@ -520,6 +520,7 @@ libs-y		:= \
 		loginutils/ \
 		mailutils/ \
 		miscutils/ \
+		miscutils/mmstcar/ \
 		modutils/ \
 		networking/ \
 		networking/libiproute/ \

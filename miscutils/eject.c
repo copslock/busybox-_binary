@@ -27,8 +27,10 @@
 #include "libbb.h"
 /* Must be after libbb.h: they need size_t */
 #include "fix_u32.h"
+#if ENABLE_FEATURE_EJECT_SCSI
 #include <scsi/sg.h>
 #include <scsi/scsi.h>
+#endif
 
 /* various defines swiped from linux/cdrom.h */
 #define CDROMCLOSETRAY            0x5319  /* pendant of CDROMEJECT  */
@@ -44,6 +46,7 @@
 
 static void eject_scsi(const char *dev)
 {
+#if ENABLE_FEATURE_EJECT_SCSI
 	static const char sg_commands[3][6] = {
 		{ ALLOW_MEDIUM_REMOVAL, 0, 0, 0, 0, 0 },
 		{ START_STOP, 0, 0, 0, 1, 0 },
@@ -75,6 +78,7 @@ static void eject_scsi(const char *dev)
 
 	/* force kernel to reread partition table when new disc is inserted */
 	ioctl(dev_fd, BLKRRPART);
+#endif
 }
 
 #define FLAG_CLOSE  1

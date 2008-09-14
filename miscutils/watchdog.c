@@ -20,8 +20,8 @@
 //usage:     "\nUse 500ms to specify period in milliseconds"
 
 #include "libbb.h"
-#include "linux/types.h" /* for __u32 */
-#include "linux/watchdog.h"
+#include <linux/types.h> /* for __u32 */
+#include <linux/watchdog.h>
 
 #define OPT_FOREGROUND  (1 << 0)
 #define OPT_STIMER      (1 << 1)
@@ -48,12 +48,12 @@ int watchdog_main(int argc, char **argv)
 
 	unsigned opts;
 	unsigned stimer_duration; /* how often to restart */
-	unsigned htimer_duration = 60000; /* reboots after N ms if not restarted */
+	unsigned htimer_duration = 7000; /* reboots after N ms if not restarted */
 	char *st_arg;
 	char *ht_arg;
 
 	opt_complementary = "=1"; /* must have exactly 1 argument */
-	opts = getopt32(argv, "Ft:T:", &st_arg, &ht_arg);
+	opts = getopt32(argv, "Ft:T:k", &st_arg, &ht_arg);
 
 	/* We need to daemonize *before* opening the watchdog as many drivers
 	 * will only allow one process at a time to do so.  Since daemonizing
@@ -89,11 +89,10 @@ int watchdog_main(int argc, char **argv)
 	ioctl_or_warn(3, WDIOC_SETTIMEOUT, &htimer_duration);
 #endif
 
-#if 0
 	ioctl_or_warn(3, WDIOC_GETTIMEOUT, &htimer_duration);
-	printf("watchdog: SW timer is %dms, HW timer is %ds\n",
-		stimer_duration, htimer_duration * 1000);
-#endif
+	if (opts & (0x01 << 3)) stimer_duration = (htimer_duration >> 1) * 1000;
+	bb_info_msg("watchdog: SW timer is %dms, HW timer is %ds\n",
+		stimer_duration, htimer_duration);
 
 	while (1) {
 		/*

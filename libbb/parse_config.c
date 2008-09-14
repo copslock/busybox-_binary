@@ -9,19 +9,19 @@
  */
 
 /* Uncomment to enable test applet */
-////config:config PARSE
-////config:	bool "Uniform config file parser debugging applet: parse"
-////config:	default n
-////config:	help
-////config:	  Typical usage of parse API:
-////config:		char *t[3];
-////config:		parser_t *p = config_open(filename);
-////config:		while (config_read(p, t, 3, 0, delimiters, flags)) { // 1..3 tokens
-////config:			bb_error_msg("TOKENS: '%s''%s''%s'", t[0], t[1], t[2]);
-////config:		}
-////config:		config_close(p);
+//config:config PARSE
+//config:	bool "Uniform config file parser debugging applet: parse"
+//config:	default n
+//config:	help
+//config:	  Typical usage of parse API:
+//config:		char *t[3];
+//config:		parser_t *p = config_open(filename);
+//config:		while (config_read(p, t, 3, 0, delimiters, flags)) { // 1..3 tokens
+//config:			bb_error_msg("TOKENS: '%s''%s''%s'", t[0], t[1], t[2]);
+//config:		}
+//config:		config_close(p);
 
-////applet:IF_PARSE(APPLET(parse, BB_DIR_USR_BIN, BB_SUID_DROP))
+//applet:IF_PARSE(APPLET(parse, BB_DIR_USR_BIN, BB_SUID_DROP))
 
 //kbuild:lib-y += parse_config.o
 

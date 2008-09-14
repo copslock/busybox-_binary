@@ -685,15 +685,15 @@ config SLATTACH
 	  slattach is a small utility to attach network interfaces to serial
 	  lines.
 
-#config TC
-#	bool "tc"
-#	default y
-#	help
-#	  show / manipulate traffic control settings
-#
-#config FEATURE_TC_INGRESS
-#	def_bool n
-#	depends on TC
+config TC
+	bool "tc"
+	default n
+	help
+	  show / manipulate traffic control settings
+
+config FEATURE_TC_INGRESS
+	def_bool n
+	depends on TC
 
 config TCPSVD
 	bool "tcpsvd"

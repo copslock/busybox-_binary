@@ -29,7 +29,6 @@
  * Licensed under GPLv2 or later, see file LICENSE in this source tree.
  */
 
-/*
 //usage:#define e2fsck_trivial_usage
 //usage:       "[-panyrcdfvstDFSV] [-b superblock] [-B blocksize] "
 //usage:       "[-I inode_buffer_blocks] [-P process_inode_size] "
@@ -48,7 +47,6 @@
 //usage:     "\n	-j journal	Set location of the external journal"
 //usage:     "\n	-l file		Add to badblocks list"
 //usage:     "\n	-L file		Set badblocks list"
-*/
 
 #include "e2fsck.h"	/*Put all of our defines here to clean things up*/
 

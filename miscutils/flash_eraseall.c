@@ -132,6 +132,8 @@ int flash_eraseall_main(int argc UNUSED_PARAM, char **argv)
 		cleanmarker.hdr_crc = cpu_to_je32(
 			crc32_block_endian0(0, &cleanmarker, sizeof(struct jffs2_unknown_node) - 4, crc32_table)
 		);
+
+		free(crc32_table);
 	}
 
 	/* Don't want to destroy progress indicator by bb_error_msg's */

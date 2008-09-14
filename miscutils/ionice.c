@@ -18,6 +18,11 @@
 #include <asm/unistd.h>
 #include "libbb.h"
 
+#ifndef SYS_ioprio_set
+#define SYS_ioprio_set __NR_ioprio_set
+#define SYS_ioprio_get __NR_ioprio_get
+#endif
+
 static int ioprio_set(int which, int who, int ioprio)
 {
 	return syscall(SYS_ioprio_set, which, who, ioprio);

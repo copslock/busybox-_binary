@@ -629,17 +629,19 @@ static int busybox_main(char **argv)
 		full_write2_str(
 			"Copyright (C) 1998-2011 Erik Andersen, Rob Landley, Denys Vlasenko\n"
 			"and others. Licensed under GPLv2.\n"
-			"See source distribution for full notice.\n"
+			//"See source distribution for full notice.\n"
 			"\n"
 			"Usage: busybox [function] [arguments]...\n"
 			"   or: busybox --list[-full]\n"
 			"   or: function [arguments]...\n"
 			"\n"
+#if 0// XXX: reduce const string
 			"\tBusyBox is a multi-call binary that combines many common Unix\n"
 			"\tutilities into a single executable.  Most people will create a\n"
 			"\tlink to busybox for each function they wish to use and BusyBox\n"
 			"\twill act like whatever it was invoked as.\n"
 			"\n"
+#endif	/* comment by mhfan */
 			"Currently defined functions:\n"
 		);
 		col = 0;

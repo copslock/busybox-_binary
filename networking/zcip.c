@@ -54,6 +54,7 @@ struct arp_packet {
 enum {
 /* 169.254.0.0 */
 	LINKLOCAL_ADDR = 0xa9fe0000,
+	//LINKLOCAL_ADDR = 0xc0a80100,		// XXX: 192.168.1.x
 
 /* protocol timeout parameters, specified in seconds */
 	PROBE_WAIT = 1,
@@ -101,6 +102,12 @@ struct globals {
 static uint32_t pick(void)
 {
 	unsigned tmp;
+
+	if (0) {	// FIXME:
+		do {	 tmp = rand() & IN_CLASSC_HOST;
+		} while (tmp > (IN_CLASSC_HOST - 0x0020));
+		return htonl((LINKLOCAL_ADDR + 0x0010) + tmp);
+	}
 
 	do {
 		tmp = rand() & IN_CLASSB_HOST;

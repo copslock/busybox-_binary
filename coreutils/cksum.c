@@ -63,9 +63,12 @@ int cksum_main(int argc UNUSED_PARAM, char **argv)
 		}
 		crc = ~crc;
 
-		printf((*argv ? "%"PRIu32" %"OFF_FMT"i %s\n" : "%"PRIu32" %"OFF_FMT"i\n"),
+		printf((*argv ? "0x%08x %"PRIu32" %"OFF_FMT"i %s\n" :
+				"0x%08x %"PRIu32" %"OFF_FMT"i\n"), crc,
 				crc, filesize, *argv);
 	} while (*argv && *++argv);
+
+	free(crc32_table);
 
 	fflush_stdout_and_exit(exit_code);
 }

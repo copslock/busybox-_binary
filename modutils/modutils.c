@@ -7,7 +7,7 @@
  */
 #include "modutils.h"
 
-#ifdef __UCLIBC__
+#if 0//def __UCLIBC__	// XXX: mhfan
 extern int init_module(void *module, unsigned long len, const char *options);
 extern int delete_module(const char *module, unsigned int flags);
 #else

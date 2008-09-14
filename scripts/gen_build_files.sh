@@ -63,6 +63,7 @@ sed -n -e 's@^//usage:\([ \t].*\)$@\1 \\@p' -e 's@^//usage:\([^ \t].*\)$@\n\1 \\
 # We skip .dotdirs - makes git/svn/etc users happier
 { cd -- "$srctree" && find . -type d -not '(' -name '.?*' -prune ')'; } \
 | while read -r d; do
+#for d in $BUSYBOX_DIRS; do
 	d="${d#./}"
 
 	src="$srctree/$d/Kbuild.src"

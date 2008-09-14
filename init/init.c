@@ -11,6 +11,7 @@
 
 //applet:IF_INIT(APPLET(init, BB_DIR_SBIN, BB_SUID_DROP))
 //applet:IF_FEATURE_INITRD(APPLET_ODDNAME(linuxrc, init, BB_DIR_ROOT, BB_SUID_DROP, linuxrc))
+//applet:IF_FEATURE_INITRAMFS(APPLET_ODDNAME(init, init, BB_DIR_ROOT, BB_SUID_DROP, init))
 
 //kbuild:lib-$(CONFIG_INIT) += init.o
 
@@ -95,6 +96,13 @@
 //config:
 //config:	  This does not apply to initramfs, which runs /init as PID 1 and
 //config:	  requires no special support.
+//config:
+//config:config FEATURE_INITRAMFS
+//config:	bool "Support running init from within an initramfs"
+//config:	default y
+//config:	depends on INIT
+//config:	help
+//config:	  XXX: mhfan
 //config:
 //config:config INIT_TERMINAL_TYPE
 //config:	string "Initial terminal type"
@@ -1045,7 +1053,8 @@ int init_main(int argc UNUSED_PARAM, char **argv)
 	setsid();
 
 	/* Make sure environs is set to something sane */
-	putenv((char *) "HOME=/");
+	putenv((char *) "HOME=/tmp");
+	putenv((char *) "TZ=cst-8");		// XXX: mhfan
 	putenv((char *) bb_PATH_root_path);
 	putenv((char *) "SHELL=/bin/sh");
 	putenv((char *) "USER=root"); /* needed? why? */

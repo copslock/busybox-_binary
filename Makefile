@@ -401,6 +401,8 @@ scripts/basic/%: scripts_basic ;
 PHONY += gen_build_files
 gen_build_files: $(wildcard $(srctree)/*/*.c) $(wildcard $(srctree)/*/*/*.c)
 	$(Q)$(srctree)/scripts/gen_build_files.sh $(srctree) $(objtree)
+	$(Q) #BUSYBOX_DIRS="$(busybox-alldirs) scripts" \
+		$(srctree)/scripts/gen_build_files.sh $(srctree) $(objtree)
 
 # bbox: we have helpers in applets/
 # we depend on scripts_basic, since scripts/basic/fixdep
@@ -472,12 +474,7 @@ ifeq ($(config-targets),1)
 -include $(srctree)/arch/$(ARCH)/Makefile
 export KBUILD_DEFCONFIG
 
-config: scripts_basic outputmakefile gen_build_files FORCE
-	$(Q)mkdir -p include
-	$(Q)$(MAKE) $(build)=scripts/kconfig $@
-	$(Q)$(MAKE) -C $(srctree) KBUILD_SRC= .kernelrelease
-
-%config: scripts_basic outputmakefile gen_build_files FORCE
+config %config: scripts_basic outputmakefile gen_build_files FORCE
 	$(Q)mkdir -p include
 	$(Q)$(MAKE) $(build)=scripts/kconfig $@
 	$(Q)$(MAKE) -C $(srctree) KBUILD_SRC= .kernelrelease
@@ -996,7 +993,7 @@ $(clean-dirs):
 clean: archclean $(clean-dirs)
 	$(call cmd,rmdirs)
 	$(call cmd,rmfiles)
-	@find . $(RCS_FIND_IGNORE) \
+	@find * $(RCS_FIND_IGNORE) \
 		\( -name '*.[oas]' -o -name '*.ko' -o -name '.*.cmd' \
 		-o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \) \
 		-type f -print | xargs rm -f
@@ -1020,15 +1017,15 @@ $(mrproper-dirs):
 mrproper: clean archmrproper $(mrproper-dirs)
 	$(call cmd,rmdirs)
 	$(call cmd,rmfiles)
-	@find . -name Config.src | sed 's/.src$$/.in/' | xargs -r rm -f
-	@find . -name Kbuild.src | sed 's/.src$$//' | xargs -r rm -f
+	@find * -name Config.src | sed 's/.src$$/.in/' | xargs -r rm -f
+	@find * -name Kbuild.src | sed 's/.src$$//' | xargs -r rm -f
 
 # distclean
 #
 PHONY += distclean
 
 distclean: mrproper
-	@find $(srctree) $(RCS_FIND_IGNORE) \
+	@find $(srctree)/* $(RCS_FIND_IGNORE) \
 		\( -name '*.orig' -o -name '*.rej' -o -name '*~' \
 		-o -name '*.bak' -o -name '#*#' -o -name '.*.orig' \
 		-o -name '.*.rej' -o -name '*.tmp' -o -size 0 \
@@ -1172,24 +1169,16 @@ endif
 ALLSOURCE_ARCHS := $(ARCH)
 
 define all-sources
-	( find $(__srctree) $(RCS_FIND_IGNORE) \
+	( find $(__srctree)* $(RCS_FIND_IGNORE) \
 	       \( -name include -o -name arch \) -prune -o \
 	       -name '*.[chS]' -print; \
 	  for ARCH in $(ALLSOURCE_ARCHS) ; do \
 	       find $(__srctree)arch/$${ARCH} $(RCS_FIND_IGNORE) \
 	            -name '*.[chS]' -print; \
 	  done ; \
-	  find $(__srctree)security/selinux/include $(RCS_FIND_IGNORE) \
-	       -name '*.[chS]' -print; \
 	  find $(__srctree)include $(RCS_FIND_IGNORE) \
 	       \( -name config -o -name 'asm-*' \) -prune \
-	       -o -name '*.[chS]' -print; \
-	  for ARCH in $(ALLINCLUDE_ARCHS) ; do \
-	       find $(__srctree)include/asm-$${ARCH} $(RCS_FIND_IGNORE) \
-	            -name '*.[chS]' -print; \
-	  done ; \
-	  find $(__srctree)include/asm-generic $(RCS_FIND_IGNORE) \
-	       -name '*.[chS]' -print )
+	       -o -name '*.[chS]' -print )
 endef
 
 quiet_cmd_cscope-file = FILELST cscope.files
@@ -1251,7 +1240,7 @@ endif #ifeq ($(mixed-targets),1)
 
 PHONY += checkstack
 checkstack:
-	$(OBJDUMP) -d busybox $$(find . -name '*.ko') | \
+	$(OBJDUMP) -d busybox $$(find * -name '*.ko') | \
 	$(PERL) $(src)/scripts/checkstack.pl $(ARCH)
 
 kernelrelease:

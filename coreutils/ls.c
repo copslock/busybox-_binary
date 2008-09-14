@@ -948,6 +948,7 @@ static struct dnode **scan_one_dir(const char *path, unsigned *nfiles_p)
 	while ((entry = readdir(dir)) != NULL) {
 		char *fullname;
 
+		//if (256 < entry->d_reclen) continue;  // XXX: mhfan
 		/* are we going to list the file- it may be . or .. or a hidden file */
 		if (entry->d_name[0] == '.') {
 			if ((!entry->d_name[1] || (entry->d_name[1] == '.' && !entry->d_name[2]))

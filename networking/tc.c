@@ -35,6 +35,14 @@
 #include "libiproute/rt_names.h"
 #include <linux/pkt_sched.h> /* for the TC_H_* macros */
 
+#ifndef TCA_PRIO_MAX
+#define TCA_PRIO_MAX	RTA_MAX			// XXX:
+#endif
+
+#ifndef TCA_PRIO_MQ
+#define TCA_PRIO_MQ		RTA_MULTIPATH	// XXX:
+#endif
+
 #define parse_rtattr_nested(tb, max, rta) \
 	(parse_rtattr((tb), (max), RTA_DATA(rta), RTA_PAYLOAD(rta)))
 

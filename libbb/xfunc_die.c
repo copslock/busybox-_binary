@@ -13,7 +13,7 @@
 #include "libbb.h"
 
 int die_sleep;
-#if ENABLE_FEATURE_PREFER_APPLETS || ENABLE_HUSH
+#if ENABLE_FEATURE_PREFER_APPLETS || ENABLE_HUSH_JOB	// XXX: mhfan
 jmp_buf die_jmp;
 #endif
 

@@ -8241,7 +8241,7 @@ static int FAST_FUNC builtin_cd(char **argv)
 		 * (exitcode 1)
 		 */
 		const char *home = get_local_var_value("HOME");
-		newdir = home ? home : "/";
+		newdir = home ? home : "/tmp";		// XXX: mhfan
 	}
 	if (chdir(newdir)) {
 		/* Mimic bash message exactly */

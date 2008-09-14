@@ -224,8 +224,11 @@ void FAST_FUNC xread(int fd, void *buf, size_t count)
 {
 	if (count) {
 		ssize_t size = full_read(fd, buf, count);
-		if ((size_t)size != count)
+		if (size < 0) bb_simple_perror_msg_and_die("short read"); else
+		if ((size_t)size != count) {
+			if (!size) bb_error_msg("EOF"); else
 			bb_error_msg_and_die("short read");
+		}
 	}
 }
 

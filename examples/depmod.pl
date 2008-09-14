@@ -88,6 +88,8 @@ if($basedir !~ m-/lib/modules/\d\.\d-) {
     opendir(BD, $basedir) or die "can't open basedir $basedir : $!\n";
     foreach ( readdir(BD) ) {
         next if /^\.\.?$/;
+		if (-l "$basedir/$_") {	# XXX: mhfan
+			warn "skip symbolic linked directory: $_";		next; }
         next unless -d "$basedir/$_";
         warn "dir = $_\n" if $verbose;
         if( /^\d\.\d/ ) {

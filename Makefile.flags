@@ -2,7 +2,7 @@
 # Build system
 # ==========================================================================
 
-BB_VER = $(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
+BB_VER = $(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)$(localver-full)
 export BB_VER
 SKIP_STRIP ?= n
 

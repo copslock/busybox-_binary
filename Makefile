@@ -1,7 +1,7 @@
 VERSION = 1
 PATCHLEVEL = 20
 SUBLEVEL = 0
-EXTRAVERSION = .git
+EXTRAVERSION = #.git
 NAME = Unnamed
 
 # *DOCUMENTATION*
@@ -322,6 +322,45 @@ CPPFLAGS	:= $(CPPFLAGS)
 AFLAGS		:= $(AFLAGS)
 LDFLAGS		:= $(LDFLAGS)
 LDLIBS		:=
+
+
+_BB_DISABLED_CONFIG_LOCALVERSION_AUTO = n
+
+# Build the kernel release string
+# The KERNELRELEASE is stored in a file named .kernelrelease
+# to be used when executing for example make install or make modules_install
+#
+# Take the contents of any files called localversion* and the config
+# variable CONFIG_LOCALVERSION and append them to KERNELRELEASE.
+# LOCALVERSION from the command line override all of this
+
+nullstring :=
+space      := $(nullstring) # end of line
+
+___localver = $(objtree)/localversion* $(srctree)/localversion*
+__localver  = $(sort $(wildcard $(___localver)))
+# skip backup files (containing '~')
+_localver = $(foreach f, $(__localver), $(if $(findstring ~, $(f)),,$(f)))
+
+localver = $(subst $(space),, \
+	   $(shell cat /dev/null $(_localver)) \
+	   $(patsubst "%",%,$(CONFIG_LOCALVERSION)))
+
+# If CONFIG_LOCALVERSION_AUTO is set scripts/setlocalversion is called
+# and if the SCM is know a tag from the SCM is appended.
+# The appended tag is determinded by the SCM used.
+#
+# Currently, only git is supported.
+# Other SCMs can edit scripts/setlocalversion and add the appropriate
+# checks as needed.
+ifdef _BB_DISABLED_CONFIG_LOCALVERSION_AUTO
+	_localver-auto = $(shell $(CONFIG_SHELL) \
+	                  $(srctree)/scripts/setlocalversion $(srctree))
+	localver-auto  = $(LOCALVERSION)$(_localver-auto)
+endif
+
+localver-full = $(localver)$(localver-auto)
+
 
 # Read KERNELRELEASE from .kernelrelease (if it exists)
 KERNELRELEASE = $(shell cat .kernelrelease 2> /dev/null)
@@ -720,7 +759,7 @@ busybox_unstripped: $(busybox-all) FORCE
 
 busybox: busybox_unstripped
 ifeq ($(SKIP_STRIP),y)
-	$(Q)cp $< $@
+	$(Q)if [ ! -e $@ ]; then ln -f $< $@; fi	# XXX: mhfan
 else
 	$(Q)$(STRIP) -s --remove-section=.note --remove-section=.comment \
 		busybox_unstripped -o $@
@@ -742,46 +781,11 @@ PHONY += $(busybox-dirs)
 $(busybox-dirs): prepare scripts
 	$(Q)$(MAKE) $(build)=$@
 
-# Build the kernel release string
-# The KERNELRELEASE is stored in a file named .kernelrelease
-# to be used when executing for example make install or make modules_install
-#
-# Take the contents of any files called localversion* and the config
-# variable CONFIG_LOCALVERSION and append them to KERNELRELEASE.
-# LOCALVERSION from the command line override all of this
-
-nullstring :=
-space      := $(nullstring) # end of line
-
-___localver = $(objtree)/localversion* $(srctree)/localversion*
-__localver  = $(sort $(wildcard $(___localver)))
-# skip backup files (containing '~')
-_localver = $(foreach f, $(__localver), $(if $(findstring ~, $(f)),,$(f)))
-
-localver = $(subst $(space),, \
-	   $(shell cat /dev/null $(_localver)) \
-	   $(patsubst "%",%,$(CONFIG_LOCALVERSION)))
-
-# If CONFIG_LOCALVERSION_AUTO is set scripts/setlocalversion is called
-# and if the SCM is know a tag from the SCM is appended.
-# The appended tag is determinded by the SCM used.
-#
-# Currently, only git is supported.
-# Other SCMs can edit scripts/setlocalversion and add the appropriate
-# checks as needed.
-ifdef _BB_DISABLED_CONFIG_LOCALVERSION_AUTO
-	_localver-auto = $(shell $(CONFIG_SHELL) \
-	                  $(srctree)/scripts/setlocalversion $(srctree))
-	localver-auto  = $(LOCALVERSION)$(_localver-auto)
-endif
-
-localver-full = $(localver)$(localver-auto)
 
 # Store (new) KERNELRELASE string in .kernelrelease
-kernelrelease = $(KERNELVERSION)$(localver-full)
 .kernelrelease: FORCE
 	$(Q)rm -f $@
-	$(Q)echo $(kernelrelease) > $@
+	$(Q)echo $(KERNELVERSION)$(localver-full) > $@
 
 
 # Things we need to do before we recursively start building the kernel

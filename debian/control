@@ -1,0 +1,16 @@
+Source: busybox
+Section: utils
+Priority: extra
+Maintainer: MeiHui FAN <mhfan@ustc.edu>
+Build-Depends: debhelper (>= 7), cdbs
+Standards-Version: 3.8.1
+Homepage: http://busybox.net
+
+Package: busybox
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: busybox-static
+Replaces: busybox-static, adduser, e2fsprogs, fbset, hostname, ifupdown, login, mount, netbase, procps, psmisc, runit
+#Provides:
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

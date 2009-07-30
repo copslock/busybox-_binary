@@ -5,12 +5,8 @@
  *                                                              *
  * Maintainer:  ∑∂√¿ª‘(MeiHui FAN)  <mhfan@ustc.edu>            *
  *                                                              *
- * CopyLeft (c)  2008  M.H.Fan                                  *
+ * CopyRight (c)  2008~2009  M.H.Fan                            *
  *   All rights reserved.                                       *
- *                                                              *
- * This file is free software;                                  *
- *   you are free to modify and/or redistribute it   	        *
- *   under the terms of the GNU General Public Licence (GPL).   *
  ****************************************************************/
 #ifndef MISC_H
 #define MISC_H

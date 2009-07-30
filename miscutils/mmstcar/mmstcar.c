@@ -2,16 +2,13 @@
 /****************************************************************
  * $ID: mmstcar.c      Thu, 31 Jul 2008 09:28:21 +0800  mhfan $ *
  *                                                              *
- * Description:                                                 *
+ * Description: The main control program for Handset,		*
+ *		GSM/GPRS, GPS, BTNI and LEDO modules.		*
  *                                                              *
  * Maintainer:  ∑∂√¿ª‘(MeiHui FAN)  <mhfan@ustc.edu>            *
  *                                                              *
- * CopyLeft (c)  2008  M.H.Fan                                  *
+ * CopyRight (c)  2008~2009  M.H.Fan                            *
  *   All rights reserved.                                       *
- *                                                              *
- * This file is free software;                                  *
- *   you are free to modify and/or redistribute it   	        *
- *   under the terms of the GNU General Public Licence (GPL).   *
  ****************************************************************/
 
 //kbuild:lib-y :=
@@ -39,7 +36,12 @@
 //usage:
 
 //#include <ev.h>
+#ifdef	CONFIG_PROPERTY
+#include "property.h"
+//#include "errmsg.h"
+#else// XXX:
 #include <libbb.h>
+#endif//CONFIG_PROPERTY
 
 #include "hscp.h"
 #include "gpsc.h"
@@ -48,7 +50,6 @@
 #include "misc.h"
 
 //#include "bench.h"
-//#include "errmsg.h"
 
 #define PACKAGE_NAME	"Multi Media Smart Terminal in Car (MMSTCar)"
 #define VERSION_MAJOR	0
@@ -1411,7 +1412,8 @@ dprintn(signalled); return 0;
 }
 
 /*  Build instructions:
-    gcc -DNDEBUG -D_GNU_SOURCE -O3 -Wall -pipe -o mmstcar mmstcar.c \
-	-lnmea -lev -Wno-strict-aliasing -DDEBUG
+    gcc -DNDEBUG -O3 -Wall -pipe -o mmstcar mmstcar.c -lnmea \
+	    -Wno-strict-aliasing -DCONFIG_PROPERTY \
+	    #-D_GNU_SOURCE #-DDEBUG #-lev
  */
 // vim:ts=8:sts=4:

@@ -5,12 +5,8 @@
  *                                                              *
  * Maintainer:  ∑∂√¿ª‘(Meihui Fan)  <mhfan@ustc.edu>            *
  *                                                              *
- * Copyright (C)  2008  M.H.Fan                                 *
+ * CopyRight (c)  2008~2009  M.H.Fan                            *
  *   All rights reserved.                                       *
- *                                                              *
- * This file is free software;                                  *
- *   you are free to modify and/or redistribute it   	        *
- *   under the terms of the GNU General Public Licence (GPL).   *
  ****************************************************************/
 #ifndef HSCP_H
 #define HSCP_H	"Hand Set Control Protocol"

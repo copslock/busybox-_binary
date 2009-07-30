@@ -5,12 +5,8 @@
  *                                                              *
  * Maintainer:  ∑∂√¿ª‘(Meihui Fan)  <mhfan@ustc.edu>            *
  *                                                              *
- * Copyright (C)  2008  M.H.Fan                                 *
+ * CopyRight (C)  2008~2009  M.H.Fan                            *
  *   All rights reserved.                                       *
- *                                                              *
- * This file is free software;                                  *
- *   you are free to modify and/or redistribute it   	        *
- *   under the terms of the GNU General Public Licence (GPL).   *
  ****************************************************************/
 #ifndef NMEA_H
 #define NMEA_H	"National Marine Electronics Association"

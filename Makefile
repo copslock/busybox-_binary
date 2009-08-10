@@ -517,6 +517,7 @@ libs-y		:= \
 		loginutils/ \
 		mailutils/ \
 		miscutils/ \
+		miscutils/fwutil/ \
 		miscutils/mmstcar/ \
 		modutils/ \
 		networking/ \

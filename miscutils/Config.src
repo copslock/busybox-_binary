@@ -610,6 +610,7 @@ config WATCHDOG
 	  certain amount of time, the watchdog device assumes the system has
 	  hung, and will cause the hardware to reboot.
 
+source miscutils/fwutil/Config.in
 source miscutils/mmstcar/Config.in
 
 endmenu

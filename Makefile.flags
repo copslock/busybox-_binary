@@ -108,6 +108,10 @@ ifeq ($(CONFIG_MMSTCAR),y)
 LDLIBS += nmea #ev #stdc++
 endif
 
+ifeq ($(CONFIG_STRAPUI),y)
+LDLIBS += twin  png12 z  jpeg  X11
+endif
+
 ifeq ($(CONFIG_PAM),y)
 # libpam uses libpthread, so for static builds busybox must be linked to
 # libpthread. On some platforms that requires an explicit -lpthread, so

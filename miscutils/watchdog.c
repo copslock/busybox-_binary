@@ -21,7 +21,13 @@
 
 #include "libbb.h"
 #include <linux/types.h> /* for __u32 */
+#ifdef __BIONIC__
+#define	WATCHDOG_IOCTL_BASE	'W'
+#define	WDIOC_SETTIMEOUT        _IOWR(WATCHDOG_IOCTL_BASE, 6, int)
+#define	WDIOC_GETTIMEOUT        _IOR(WATCHDOG_IOCTL_BASE, 7, int)
+#else
 #include <linux/watchdog.h>
+#endif
 
 #define OPT_FOREGROUND  (1 << 0)
 #define OPT_STIMER      (1 << 1)

@@ -29,9 +29,15 @@
 /* X/OPEN tells us to use <sys/{types,ipc,shm}.h> for shmctl() */
 #include <sys/types.h>
 #include <sys/ipc.h>
+#ifdef __BIONIC__
+#include <linux/shm.h>
+#include <linux/msg.h>
+#include <linux/sem.h>
+#else
 #include <sys/sem.h>
 #include <sys/msg.h>
 #include <sys/shm.h>
+#endif
 
 #include "libbb.h"
 
@@ -79,6 +85,8 @@ struct shm_info {
    Linux include files would also define it. */
 #if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)
 /* union semun is defined by including <sys/sem.h> */
+#elif defined(__BIONIC__)
+#define ushort unsigned short
 #else
 /* according to X/OPEN we have to define it ourselves */
 union semun {

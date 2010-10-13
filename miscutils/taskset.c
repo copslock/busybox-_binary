@@ -26,6 +26,62 @@
 #include <sched.h>
 #include "libbb.h"
 
+#if defined(__BIONIC__) && !defined(BIONIC_ICS)
+#ifndef __CPU_SETSIZE
+#define __CPU_SETSIZE	1024
+#define __NCPUBITS	(8 * sizeof (__cpu_mask))
+
+# define CPU_SET(cpu, cpusetp)	 __CPU_SET_S (cpu, sizeof (cpu_set_t), cpusetp)
+# define CPU_ISSET(cpu, cpusetp) __CPU_ISSET_S (cpu, sizeof (cpu_set_t), \
+						cpusetp)
+# define CPU_ZERO(cpusetp)	 __CPU_ZERO_S (sizeof (cpu_set_t), cpusetp)
+
+# define __CPU_ISSET_S(cpu, setsize, cpusetp) \
+  (__extension__							      \
+   ({ size_t __cpu = (cpu);						      \
+      __cpu < 8 * (setsize)						      \
+      ? ((((__const __cpu_mask *) ((cpusetp)->__bits))[__CPUELT (__cpu)]      \
+	  & __CPUMASK (__cpu))) != 0					      \
+      : 0; }))
+
+# define __CPU_SET_S(cpu, setsize, cpusetp) \
+  (__extension__							      \
+   ({ size_t __cpu = (cpu);						      \
+      __cpu < 8 * (setsize)						      \
+      ? (((__cpu_mask *) ((cpusetp)->__bits))[__CPUELT (__cpu)]		      \
+	 |= __CPUMASK (__cpu))						      \
+      : 0; }))
+
+#  define __CPU_ZERO_S(setsize, cpusetp) \
+  do {									      \
+    size_t __i;								      \
+    size_t __imax = (setsize) / sizeof (__cpu_mask);			      \
+    __cpu_mask *__bits = (cpusetp)->__bits;				      \
+    for (__i = 0; __i < __imax; ++__i)					      \
+      __bits[__i] = 0;							      \
+  } while (0)
+
+# define __CPUELT(cpu)	((cpu) / __NCPUBITS)
+# define __CPUMASK(cpu)	((__cpu_mask) 1 << ((cpu) % __NCPUBITS))
+
+# define CPU_SETSIZE __CPU_SETSIZE
+
+typedef unsigned long int __cpu_mask;
+
+/* Data structure to describe CPU mask.  */
+typedef struct
+{
+  __cpu_mask __bits[__CPU_SETSIZE / __NCPUBITS];
+} cpu_set_t;
+#endif
+
+#define sched_getaffinity(pid, cpusize, mask) \
+		syscall(__NR_sched_getaffinity, pid, cpusize, mask)
+
+#define sched_setaffinity(pid, cpusize, mask) \
+		syscall(__NR_sched_setaffinity, pid, cpusize, mask)
+#endif
+
 #if ENABLE_FEATURE_TASKSET_FANCY
 #define TASKSET_PRINTF_MASK "%s"
 /* craft a string from the mask */

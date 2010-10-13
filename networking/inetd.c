@@ -164,6 +164,10 @@
 //usage:     "\n	-R N	Pause services after N connects/min"
 //usage:     "\n		(default: 0 - disabled)"
 
+#ifdef __BIONIC__
+#include <linux/socket.h>
+#endif
+
 #include <syslog.h>
 #include <sys/un.h>
 

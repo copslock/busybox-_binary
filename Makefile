@@ -667,6 +667,7 @@ define rule_busybox__
 	$(Q)echo 'cmd_$@ := $(cmd_busybox__)' > $(@D)/.$(@F).cmd
 endef
 
+ifeq ($(BUILD_FOR_ANDROID),)
 
 ifdef CONFIG_KALLSYMS
 # Generate section listing all symbols and add it into busybox $(kallsyms.o)
@@ -765,6 +766,8 @@ else
 # strip is confused by PIE executable and does not set exec bits
 	$(Q)chmod a+x $@
 endif
+
+endif # BUILD_FOR_ANDROID
 
 # The actual objects are generated when descending,
 # make sure no implicit rule kicks in
@@ -877,6 +880,8 @@ define filechk_version.h
 endef
 
 # ---------------------------------------------------------------------------
+
+ifeq ($(BUILD_FOR_ANDROID),)
 
 PHONY += depend dep
 depend dep:
@@ -1057,6 +1062,8 @@ boards := $(notdir $(boards))
 # ---------------------------------------------------------------------------
 %docs: scripts_basic FORCE
 	$(Q)$(MAKE) $(build)=Documentation/DocBook $@
+
+endif # BUILD_FOR_ANDROID
 
 else # KBUILD_EXTMOD
 
@@ -1269,6 +1276,8 @@ else
         target-dir = $(if $(KBUILD_EXTMOD),$(dir $<),$(dir $@))
 endif
 
+ifeq ($(BUILD_FOR_ANDROID),)
+
 %.s: %.c prepare scripts FORCE
 	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
 %.i: %.c prepare scripts FORCE
@@ -1332,7 +1341,11 @@ endif	# skip-makefile
 PHONY += FORCE
 FORCE:
 
+show-sources: ; @for f in $(busybox-dirs); do $(MAKE) $(build)=$$f $@; done
+
 -include $(srctree)/Makefile.custom
+
+endif # BUILD_FOR_ANDROID
 
 # Declare the contents of the .PHONY variable as phony.  We keep that
 # information in a variable se we can use it in if_changed and friends.

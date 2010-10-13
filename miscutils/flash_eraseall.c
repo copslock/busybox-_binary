@@ -19,7 +19,9 @@
 
 #include "libbb.h"
 #include <mtd/mtd-user.h>
+#if !(defined(ANDROID) || defined(__BIONIC__))
 #include <linux/jffs2.h>
+#endif
 
 #define OPTION_J  (1 << 0)
 #define OPTION_Q  (1 << 1)
@@ -62,7 +64,9 @@ static void show_progress(mtd_info_t *meminfo, erase_info_t *erase)
 int flash_eraseall_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int flash_eraseall_main(int argc UNUSED_PARAM, char **argv)
 {
+#ifdef __LINUX_JFFS2_H__
 	struct jffs2_unknown_node cleanmarker;
+#endif
 	mtd_info_t meminfo;
 	int fd, clmpos, clmlen;
 	erase_info_t erase;
@@ -87,6 +91,7 @@ int flash_eraseall_main(int argc UNUSED_PARAM, char **argv)
 	clmpos = 0;
 	clmlen = 8;
 	if (flags & OPTION_J) {
+#ifdef __LINUX_JFFS2_H__
 		uint32_t *crc32_table;
 
 		crc32_table = crc32_filltable(NULL, 0);
@@ -134,6 +139,9 @@ int flash_eraseall_main(int argc UNUSED_PARAM, char **argv)
 		);
 
 		free(crc32_table);
+#else
+		bb_error_msg("Warning: JFFS2 formatting is not supported!\n");
+#endif
 	}
 
 	/* Don't want to destroy progress indicator by bb_error_msg's */
@@ -174,6 +182,7 @@ int flash_eraseall_main(int argc UNUSED_PARAM, char **argv)
 		if (!(flags & OPTION_J))
 			continue;
 
+#ifdef __LINUX_JFFS2_H__
 		/* write cleanmarker */
 		if (flags & IS_NAND) {
 			struct mtd_oob_buf oob;
@@ -194,6 +203,7 @@ int flash_eraseall_main(int argc UNUSED_PARAM, char **argv)
 				continue;
 			} */
 		}
+#endif
 		if (!(flags & OPTION_Q))
 			printf(" Cleanmarker written at %x.", erase.start);
 	}

@@ -129,7 +129,13 @@
 /* #include <net/if.h> - no. linux/if_bonding.h pulls in linux/if.h */
 #include <linux/if.h>
 //#include <net/if_arp.h> - not needed?
+#ifdef __BIONIC__
+#define BOND_ENSLAVE_OLD		(SIOCDEVPRIVATE)
+#define BOND_RELEASE_OLD		(SIOCDEVPRIVATE + 1)
+#define BOND_CHANGE_ACTIVE_OLD		(SIOCDEVPRIVATE + 13)
+#else
 #include <linux/if_bonding.h>
+#endif
 #include <linux/sockios.h>
 #include "fix_u32.h" /* hack, so we may include kernel's ethtool.h */
 #include <linux/ethtool.h>

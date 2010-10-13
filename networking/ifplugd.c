@@ -35,7 +35,20 @@
 
 #include "fix_u32.h"
 #include <linux/if.h>
+#ifdef __BIONIC__
+#include <paths.h>
+
+#include <linux/if_ether.h>
+
+struct mii_ioctl_data {
+	__u16		phy_id;
+	__u16		reg_num;
+	__u16		val_in;
+	__u16		val_out;
+};
+#else
 #include <linux/mii.h>
+#endif
 #include <linux/ethtool.h>
 #ifdef HAVE_NET_ETHERNET_H
 # include <net/ethernet.h>

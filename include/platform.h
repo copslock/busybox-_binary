@@ -433,7 +433,7 @@ typedef unsigned smalluint;
 # undef HAVE_STPCPY
 #endif
 
-#if defined(ANDROID) || defined(__ANDROID__)
+#if defined(ANDROID) || defined(__ANDROID__) || defined(__BIONIC__)
 # undef HAVE_DPRINTF
 # undef HAVE_GETLINE
 # undef HAVE_STPCPY
@@ -498,6 +498,12 @@ extern int vasprintf(char **string_ptr, const char *format, va_list p) FAST_FUNC
 # include <stdio.h> /* for FILE */
 # include <sys/types.h> /* size_t */
 extern ssize_t getline(char **lineptr, size_t *n, FILE *stream) FAST_FUNC;
+#endif
+
+#ifdef __BIONIC__
+#include "android.h"
+
+#define BB_ADDITIONAL_PATH ":/system/bin:/system/xbin"
 #endif
 
 #endif

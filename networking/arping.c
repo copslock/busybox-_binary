@@ -27,6 +27,10 @@
 #include <netinet/ether.h>
 #include <netpacket/packet.h>
 
+#ifdef __BIONIC__
+#include <linux/if_arp.h>
+#endif
+
 #include "libbb.h"
 
 /* We don't expect to see 1000+ seconds delay, unsigned is enough */

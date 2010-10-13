@@ -60,6 +60,14 @@
 //kbuild:lib-$(CONFIG_UBIUPDATEVOL) += ubi_tools.o
 
 #include "libbb.h"
+#ifdef ANDROID_NO_MTD
+int ubi_tools_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+int ubi_tools_main(int argc UNUSED_PARAM, char **argv)
+{
+	bb_error_msg_and_die("Platform missing MTD utils!");
+	return EXIT_FAILURE;
+}
+#else
 #include <mtd/ubi-user.h>
 
 #define OPTION_M  (1 << 0)
@@ -270,3 +278,5 @@ int ubi_tools_main(int argc UNUSED_PARAM, char **argv)
 
 	return EXIT_SUCCESS;
 }
+#endif
+

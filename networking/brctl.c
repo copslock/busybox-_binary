@@ -67,6 +67,9 @@
 # include <linux/if_bridge.h>
 
 /* FIXME: These 4 funcs are not really clean and could be improved */
+#ifdef __BIONIC__
+#define strtotimeval(tv, time_str) strtotimeval(time_str, tv)
+#else
 static ALWAYS_INLINE void strtotimeval(struct timeval *tv,
 		const char *time_str)
 {
@@ -82,6 +85,7 @@ static ALWAYS_INLINE void strtotimeval(struct timeval *tv,
 	tv->tv_sec = secs;
 	tv->tv_usec = 1000000 * (secs - tv->tv_sec);
 }
+#endif
 
 static ALWAYS_INLINE unsigned long tv_to_jiffies(const struct timeval *tv)
 {

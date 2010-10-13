@@ -28,6 +28,20 @@
 #include <resolv.h>
 #include "libbb.h"
 
+#ifdef __BIONIC__
+#include <netinet/in.h>
+#ifdef ENABLE_FEATURE_IPV6
+#include <netinet/in6.h>
+#endif
+#include <arpa_nameser.h>
+#include <resolv_private.h>
+
+#undef _res
+extern struct __res_state _nres;
+#define _res (*__res_get_state())
+//#define _res _nres
+#endif
+
 /*
  * I'm only implementing non-interactive mode;
  * I totally forgot nslookup even had an interactive mode.

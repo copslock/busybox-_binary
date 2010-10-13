@@ -20,7 +20,11 @@
 //usage:#define linux64_trivial_usage NOUSAGE_STR
 //usage:#define linux64_full_usage ""
 
+#ifdef __BIONIC__
+#include <linux/personality.h>
+#else
 #include <sys/personality.h>
+#endif
 
 #include "libbb.h"
 

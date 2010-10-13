@@ -17,8 +17,13 @@
 
 #include "libbb.h"
 #include <sys/ipc.h>
+#ifdef __BIONIC__
+#include <linux/sem.h>
+#include <linux/shm.h>
+#else
 #include <sys/sem.h>
 #include <sys/shm.h>
+#endif
 
 #define DEBUG 0
 

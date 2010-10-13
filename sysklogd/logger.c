@@ -33,6 +33,14 @@
  *
  * Original copyright notice is retained at the end of this file.
  */
+#ifdef __BIONIC__
+#define facilitynames NULL
+#define prioritynames NULL
+static int decode(char *name, const char *codetab) {
+	(void)name; (void)codetab;
+	return -1;
+}
+#else
 static int decode(char *name, const CODE *codetab)
 {
 	const CODE *c;
@@ -47,6 +55,7 @@ static int decode(char *name, const CODE *codetab)
 
 	return -1;
 }
+#endif
 
 /* Decode a symbolic name to a numeric value
  * this function is based on code

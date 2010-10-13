@@ -22,8 +22,15 @@ void FAST_FUNC write_pidfile(const char *path)
 
 	if (!path)
 		return;
+
+#ifdef __BIONIC__
+	end = xmalloc(5 + strlen(path) + 1);
+	strcpy(end, "/data");	strcpy(&end[5], path);
+	pid_fd = open(end, O_WRONLY|O_CREAT|O_TRUNC, 0666);	free(end);
+#else
 	/* we will overwrite stale pidfile */
 	pid_fd = open(path, O_WRONLY|O_CREAT|O_TRUNC, 0666);
+#endif
 	if (pid_fd < 0)
 		return;
 

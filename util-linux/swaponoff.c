@@ -26,6 +26,12 @@
 #include <mntent.h>
 #ifndef __BIONIC__
 # include <sys/swap.h>
+#else
+#define MNTOPT_NOAUTO "noauto"
+
+#define SWAP_FLAG_PREFER 0x8000
+#define SWAP_FLAG_PRIO_MASK 0x7fff
+#define SWAP_FLAG_PRIO_SHIFT 0
 #endif
 
 #if ENABLE_FEATURE_MOUNT_LABEL
@@ -93,7 +99,9 @@ static int do_em_all(void)
 			/* swapon -a should ignore entries with noauto,
 			 * but swapoff -a should process them */
 			if (applet_name[5] != 'n'
+#ifndef __BIONIC__
 			 || hasmntopt(m, MNTOPT_NOAUTO) == NULL
+#endif// XXX:
 			) {
 				err += swap_enable_disable(m->mnt_fsname);
 			}

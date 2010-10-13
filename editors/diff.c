@@ -707,7 +707,11 @@ static int diffreg(char *file[2])
 		 * When we meet non-seekable file, we must make a temp copy.
 		 */
 		if (lseek(fd, 0, SEEK_SET) == -1 && errno == ESPIPE) {
-			char name[] = "/tmp/difXXXXXX";
+			char name[] =
+#if defined(ANDROID) || defined(__BIONIC__)
+					"/data/local"
+#endif
+					"/tmp/difXXXXXX";
 			int fd_tmp = xmkstemp(name);
 
 			unlink(name);

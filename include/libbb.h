@@ -114,7 +114,8 @@
 # include <netinet/in.h>
 #else
 # include <arpa/inet.h>
-# if !defined(__socklen_t_defined) && !defined(_SOCKLEN_T_DECLARED)
+# if !defined(__socklen_t_defined) && !defined(_SOCKLEN_T_DECLARED) && \
+	 !defined(__BIONIC__)
 /* We #define socklen_t *after* includes, otherwise we get
  * typedef redefinition errors from system headers
  * (in case "is it defined already" detection above failed)
@@ -144,6 +145,10 @@
 #if		defined(__KERNEL__)
 #define errno 0 // XXX:
 #define fprintf(_, ...) printk(__VA_ARGS__)
+#elif	defined(ANDROID) || defined(__BIONIC__)
+#include <android/log.h>
+#define fprintf(_, ...) __android_log_print(ANDROID_LOG_DEBUG, \
+		"Busybox", __VA_ARGS__)
 #elif	defined(LIBBB_H)
 #define fprintf(_, ...) fdprintf(STDERR_FILENO, __VA_ARGS__)
 #elif	defined(AVUTIL_LOG_H)
@@ -202,6 +207,7 @@ int klogctl(int type, char *b, int len);
 #endif
 
 
+#ifndef __BIONIC__
 /* Busybox does not use threads, we can speed up stdio. */
 #ifdef HAVE_UNLOCKED_STDIO
 # undef  getc
@@ -223,6 +229,7 @@ int klogctl(int type, char *b, int len);
 # define fgets(s, n, stream) fgets_unlocked(s, n, stream)
 # undef  fputs
 # define fputs(s, stream) fputs_unlocked(s, stream)
+#endif
 #endif
 
 
@@ -1812,12 +1819,23 @@ extern struct globals *const ptr_to_globals;
  * use bb_default_login_shell and following defines.
  * If you change LIBBB_DEFAULT_LOGIN_SHELL,
  * don't forget to change increment constant. */
-#define LIBBB_DEFAULT_LOGIN_SHELL  "-/bin/sh"
 extern const char bb_default_login_shell[];
+
+#if	defined(ANDROID) || defined(__BIONIC__)
+/* Since android does not have the /bin path, unlike most unix systems,
+ * it needs an exception in the default shell path. */
+# define LIBBB_DEFAULT_LOGIN_SHELL "-/system/xbin/sh"
+/* "/system/xbin/sh" */
+# define DEFAULT_SHELL			   (bb_default_login_shell+1)
+/* "sh" */
+# define DEFAULT_SHELL_SHORT_NAME  (bb_default_login_shell+13)
+#else
+#define LIBBB_DEFAULT_LOGIN_SHELL  "-/bin/sh"
 /* "/bin/sh" */
 #define DEFAULT_SHELL              (bb_default_login_shell+1)
 /* "sh" */
 #define DEFAULT_SHELL_SHORT_NAME   (bb_default_login_shell+6)
+#endif
 
 /* The following devices are the same on all systems.  */
 #define CURRENT_TTY "/dev/tty"
@@ -1831,6 +1849,18 @@ extern const char bb_default_login_shell[];
 # define VC_4 "/dev/ttyv3"
 # define VC_5 "/dev/ttyv4"
 # define VC_FORMAT "/dev/ttyv%d"
+#elif	defined(ANDROID) || defined(__BIONIC__)
+# define CURRENT_VC CURRENT_TTY
+# define VC_1 "/dev/tty1"
+# define VC_2 "/dev/tty2"
+# define VC_3 "/dev/tty3"
+# define VC_4 "/dev/tty4"
+# define VC_5 "/dev/tty5"
+# define VC_FORMAT "/dev/tty%d"
+# define LOOP_FORMAT "/dev/block/loop%d"
+# define LOOP_NAMESIZE (sizeof("/dev/block/loop") + sizeof(int)*3 + 1)
+# define LOOP_NAME "/dev/block/loop"
+# define FB_0 "/dev/graphics/fb0"
 #elif defined(__GNU__)
 # define CURRENT_VC CURRENT_TTY
 # define VC_1 "/dev/tty1"

@@ -22,12 +22,19 @@
 /* X/OPEN tells us to use <sys/{types,ipc,sem}.h> for semctl() */
 /* X/OPEN tells us to use <sys/{types,ipc,msg}.h> for msgctl() */
 #include <sys/ipc.h>
+#ifdef __BIONIC__
+#include <linux/shm.h>
+#include <linux/msg.h>
+#include <linux/sem.h>
+#else
 #include <sys/shm.h>
 #include <sys/msg.h>
 #include <sys/sem.h>
+#endif
 
 #if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)
 /* union semun is defined by including <sys/sem.h> */
+#elif defined(__BIONIC__)
 #else
 /* according to X/OPEN we have to define it ourselves */
 union semun {

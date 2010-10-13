@@ -43,6 +43,25 @@
 
 #include <syslog.h>
 
+#ifdef __BIONIC__
+#include <linux/if_arp.h>
+#include <linux/if_ether.h>
+
+struct	ether_arp {
+	struct	arphdr ea_hdr;		/* fixed-size header */
+	u_int8_t arp_sha[ETH_ALEN];	/* sender hardware address */
+	u_int8_t arp_spa[4];		/* sender protocol address */
+	u_int8_t arp_tha[ETH_ALEN];	/* target hardware address */
+	u_int8_t arp_tpa[4];		/* target protocol address */
+};
+
+#define	arp_hrd	ea_hdr.ar_hrd
+#define	arp_pro	ea_hdr.ar_pro
+#define	arp_hln	ea_hdr.ar_hln
+#define	arp_pln	ea_hdr.ar_pln
+#define	arp_op	ea_hdr.ar_op
+#endif
+
 /* We don't need more than 32 bits of the counter */
 #define MONOTONIC_US() ((unsigned)monotonic_us())
 

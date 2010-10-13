@@ -86,7 +86,9 @@
     )
 # include <malloc.h>   /* for malloc_trim */
 #endif
+#ifndef __BIONIC__
 #include <glob.h>
+#endif
 /* #include <dmalloc.h> */
 #if ENABLE_HUSH_CASE
 # include <fnmatch.h>
@@ -1996,6 +1998,9 @@ static void cmdedit_update_prompt(void)
 {
 	if (ENABLE_FEATURE_EDITING_FANCY_PROMPT) {
 		G.PS1 = get_local_var_value("PS1");
+#ifdef BIONIC_ICS
+		if (G.PS1[0] == '$' && G.PS1[1] != ' ') G.PS1 = NULL;
+#endif
 		if (G.PS1 == NULL)
 			G.PS1 = "\\w \\$ ";
 		G.PS2 = get_local_var_value("PS2");
@@ -2599,7 +2604,7 @@ static int perform_glob(o_string *o, int n)
 	return n;
 }
 
-#else /* !HUSH_BRACE_EXPANSION */
+#elif !defined(__BIONIC__) /* !HUSH_BRACE_EXPANSION */
 
 /* Helper */
 static int glob_needed(const char *s)
@@ -2686,8 +2691,10 @@ static int o_save_ptr(o_string *o, int n)
 		/* If o->has_empty_slot, list[n] was already globbed
 		 * (if it was requested back then when it was filled)
 		 * so don't do that again! */
+#ifndef __BIONIC__
 		if (!o->has_empty_slot)
 			return perform_glob(o, n); /* o_save_ptr_helper is inside */
+#endif
 	}
 	return o_save_ptr_helper(o, n);
 }

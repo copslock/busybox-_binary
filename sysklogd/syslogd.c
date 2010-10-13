@@ -65,8 +65,13 @@
 
 #if ENABLE_FEATURE_IPC_SYSLOG
 #include <sys/ipc.h>
+#ifdef __BIONIC__
+#include <linux/sem.h>
+#include <linux/shm.h>
+#else
 #include <sys/sem.h>
 #include <sys/shm.h>
+#endif
 #endif
 
 
@@ -622,6 +627,10 @@ static void log_locally(time_t now, char *msg, logFile_t *log_file)
 
 static void parse_fac_prio_20(int pri, char *res20)
 {
+#ifdef __BIONIC__
+	(void)pri;
+	*res20 = '\0';
+#else
 	const CODE *c_pri, *c_fac;
 
 	c_fac = find_by_val(LOG_FAC(pri) << 3, facilitynames);
@@ -633,6 +642,7 @@ static void parse_fac_prio_20(int pri, char *res20)
 		}
 	}
 	snprintf(res20, 20, "<%d>", pri);
+#endif	/* comment by mhfan */
 }
 
 /* len parameter is used only for "is there a timestamp?" check.

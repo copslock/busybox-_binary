@@ -15,45 +15,51 @@ struct speed_map {
 };
 
 static const struct speed_map speeds[] = {
-	{B0, 0},
-	{B50, 50},
-	{B75, 75},
-	{B110, 110},
-	{B134, 134},
-	{B150, 150},
-	{B200, 200},
-	{B300, 300},
-	{B600, 600},
-	{B1200, 1200},
-	{B1800, 1800},
-	{B2400, 2400},
-	{B4800, 4800},
-	{B9600, 9600},
+#define SPEED_MAP(n) { B ##n, (int)(n < 0x8000u ? n : 0x8000u | (n >> 8)) }
+
+	SPEED_MAP(0),
+	SPEED_MAP(50),
+	SPEED_MAP(75),
+	SPEED_MAP(110),
+	SPEED_MAP(134),
+	SPEED_MAP(150),
+
+	SPEED_MAP(200),
+	SPEED_MAP(300),
+	SPEED_MAP(600),
+	SPEED_MAP(1200),
+	SPEED_MAP(1800),
+	SPEED_MAP(2400),
+	SPEED_MAP(4800),
+	SPEED_MAP(9600),
+
 #ifdef B19200
-	{B19200, 19200},
+	SPEED_MAP(19200),
 #elif defined(EXTA)
-	{EXTA, 19200},
+	{ EXTA, 19200 },
 #endif
 #ifdef B38400
-	{B38400, 38400/256 + 0x8000U},
+	SPEED_MAP(38400),
 #elif defined(EXTB)
-	{EXTB, 38400/256 + 0x8000U},
+	{ EXTB, 0x8000u | (38400 >> 8) },
 #endif
 #ifdef B57600
-	{B57600, 57600/256 + 0x8000U},
+	SPEED_MAP(57600),
 #endif
 #ifdef B115200
-	{B115200, 115200/256 + 0x8000U},
+	SPEED_MAP(115200),
 #endif
 #ifdef B230400
-	{B230400, 230400/256 + 0x8000U},
+	SPEED_MAP(230400),
 #endif
 #ifdef B460800
-	{B460800, 460800/256 + 0x8000U},
+	SPEED_MAP(460800),
 #endif
 #ifdef B921600
-	{B921600, 921600/256 + 0x8000U},
+	SPEED_MAP(921600),
 #endif
+
+#undef SPEED_MAP
 };
 
 enum { NUM_SPEEDS = ARRAY_SIZE(speeds) };
@@ -65,7 +71,7 @@ unsigned FAST_FUNC tty_baud_to_value(speed_t speed)
 	do {
 		if (speed == speeds[i].speed) {
 			if (speeds[i].value & 0x8000U) {
-				return ((unsigned long) (speeds[i].value) & 0x7fffU) * 256;
+				return ((unsigned long) (speeds[i].value) & ~0x8000U) << 8;
 			}
 			return speeds[i].value;
 		}

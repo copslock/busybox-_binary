@@ -170,7 +170,7 @@ static void FAST_FUNC md5_process_block64(md5_ctx_t *ctx)
 		0, 7, 14, 5, 12, 3, 10, 1, 8, 15, 6, 13, 4, 11, 2, 9  /* 4 */
 	};
 #endif
-	uint32_t *words = (void*) ctx->wbuffer;
+	uint32_t *words = (uint32_t*)ctx->wbuffer;
 	uint32_t A = ctx->hash[0];
 	uint32_t B = ctx->hash[1];
 	uint32_t C = ctx->hash[2];
@@ -797,7 +797,7 @@ void FAST_FUNC sha512_begin(sha512_ctx_t *ctx)
 {
 	int i;
 	/* Two extra iterations zero out ctx->total64[2] */
-	uint64_t *tp = ctx->total64;
+	uint64_t *tp = (uint64_t*)(void*)ctx->total64;
 	for (i = 0; i < 2+8; i++)
 		tp[i] = ((uint64_t)(init256[i]) << 32) + init512_lo[i];
 	/*ctx->total64[0] = ctx->total64[1] = 0; - already done */
@@ -1082,7 +1082,7 @@ void FAST_FUNC sha3_begin(sha3_ctx_t *ctx)
 void FAST_FUNC sha3_hash(sha3_ctx_t *ctx, const void *buffer, size_t len)
 {
 #if SHA3_SMALL
-	const uint8_t *data = buffer;
+	const uint8_t *data = (const uint8_t*)buffer;
 	unsigned bufpos = ctx->bytes_queued;
 
 	while (1) {
@@ -1108,7 +1108,7 @@ void FAST_FUNC sha3_hash(sha3_ctx_t *ctx, const void *buffer, size_t len)
 	ctx->bytes_queued = bufpos + SHA3_IBLK_BYTES;
 #else
 	/* +50 bytes code size, but a bit faster because of long-sized XORs */
-	const uint8_t *data = buffer;
+	const uint8_t *data = (const uint8_t*)buffer;
 	unsigned bufpos = ctx->bytes_queued;
 
 	/* If already data in queue, continue queuing first */
@@ -1129,6 +1129,7 @@ void FAST_FUNC sha3_hash(sha3_ctx_t *ctx, const void *buffer, size_t len)
 		 * We try to be efficient - operate one word at a time, not byte.
 		 * Careful wrt unaligned access: can't just use "*(long*)data"!
 		 */
+	    {
 		unsigned count = SHA3_IBLK_BYTES / sizeof(long);
 		long *buf = (long*)ctx->state;
 		do {
@@ -1138,6 +1139,7 @@ void FAST_FUNC sha3_hash(sha3_ctx_t *ctx, const void *buffer, size_t len)
 			data += sizeof(long);
 		} while (--count);
 		len -= SHA3_IBLK_BYTES;
+	    }
  do_block:
 		sha3_process_block72(ctx->state);
 	}

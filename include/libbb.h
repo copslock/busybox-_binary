@@ -252,9 +252,11 @@ typedef unsigned long uoff_t;
 /* Users report bionic to use 32-bit off_t even if LARGEFILE support is requested.
  * We misdetected that. Don't let it build:
  */
+#ifndef __cplusplus	// XXX:
 struct BUG_off_t_size_is_misdetected {
 	char BUG_off_t_size_is_misdetected[sizeof(off_t) == sizeof(uoff_t) ? 1 : -1];
 };
+#endif
 
 /* Some useful definitions */
 #undef FALSE
@@ -290,7 +292,7 @@ struct BUG_off_t_size_is_misdetected {
 #endif
 #endif
 
-#if defined(__GLIBC__)
+#if defined(__GLIBC__) && !__cplusplus	// XXX:
 /* glibc uses __errno_location() to get a ptr to errno */
 /* We can just memorize it once - no multithreading in busybox :) */
 extern int *const bb_errno;
@@ -482,7 +484,7 @@ int xopen_stdin(const char *pathname) FAST_FUNC;
 void xrename(const char *oldpath, const char *newpath) FAST_FUNC;
 int rename_or_warn(const char *oldpath, const char *newpath) FAST_FUNC;
 off_t xlseek(int fd, off_t offset, int whence) FAST_FUNC;
-int xmkstemp(char *template) FAST_FUNC;
+int xmkstemp(char *templ) FAST_FUNC;
 off_t fdlength(int fd) FAST_FUNC;
 
 uoff_t FAST_FUNC get_volume_size_in_bytes(int fd,
@@ -558,15 +560,8 @@ typedef struct len_and_sockaddr {
 } len_and_sockaddr;
 enum {
 	LSA_LEN_SIZE = offsetof(len_and_sockaddr, u),
-	LSA_SIZEOF_SA = sizeof(
-		union {
-			struct sockaddr sa;
-			struct sockaddr_in sin;
-#if ENABLE_FEATURE_IPV6
-			struct sockaddr_in6 sin6;
-#endif
-		}
-	)
+	LSA_SIZEOF_SA = sizeof(((len_and_sockaddr*)0)->u)
+	//LSA_SIZEOF_SA = sizeof(len_and_sockaddr) - LSA_LEN_SIZE
 };
 /* Create stream socket, and allocate suitable lsa.
  * (lsa of correct size and lsa->sa.sa_family (AF_INET/AF_INET6))
